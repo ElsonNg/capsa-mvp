@@ -14,7 +14,7 @@ export function ConflictList({ conflicts }: { conflicts: SpaceConflict[] }) {
       {conflicts.map((conflict) => (
         <article
           key={conflict.id}
-          className="rounded-lg border border-[#e6e8ea] bg-white p-4"
+          className="animate-fade-in-up rounded-lg border border-[#e6e8ea] bg-white p-4"
         >
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-2">

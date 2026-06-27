@@ -65,11 +65,11 @@ export function DeleteSpaceModal({
 
       {open ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
+          className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
           onClick={() => setOpen(false)}
         >
           <div
-            className="w-full max-w-md rounded-xl border border-[#e6e8ea] bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+            className="animate-pop-in w-full max-w-md rounded-xl border border-[#e6e8ea] bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
             onClick={(event) => event.stopPropagation()}
           >
             <h2 className="text-xl font-semibold text-[#191c1e]">

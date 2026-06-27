@@ -107,6 +107,7 @@ export async function listGoogleDriveViewableFiles({
 export async function getGoogleDriveFileMetadata(token: string, fileId: string) {
   const url = new URL(`${DRIVE_FILES_URL}/${encodeURIComponent(fileId)}`);
   url.searchParams.set("fields", DRIVE_FILE_METADATA_FIELDS);
+  url.searchParams.set("supportsAllDrives", "true");
 
   const response = await fetchGoogleDrive(url, token);
 
@@ -164,6 +165,9 @@ async function listGoogleDriveFiles(
   url.searchParams.set("fields", DRIVE_FILE_FIELDS);
   url.searchParams.set("orderBy", "modifiedTime desc");
   url.searchParams.set("q", buildDriveQuery(search));
+  // Include files from shared drives, not just My Drive.
+  url.searchParams.set("includeItemsFromAllDrives", "true");
+  url.searchParams.set("supportsAllDrives", "true");
 
   if (pageToken) {
     url.searchParams.set("pageToken", pageToken);
@@ -179,6 +183,7 @@ async function exportGoogleDocAsPlainText(token: string, fileId: string) {
     `${DRIVE_FILES_URL}/${encodeURIComponent(fileId)}/export`,
   );
   url.searchParams.set("mimeType", "text/plain");
+  url.searchParams.set("supportsAllDrives", "true");
 
   const response = await fetchGoogleDrive(url, token, "text/plain");
 
@@ -188,6 +193,7 @@ async function exportGoogleDocAsPlainText(token: string, fileId: string) {
 async function downloadGoogleDriveFile(token: string, fileId: string) {
   const url = new URL(`${DRIVE_FILES_URL}/${encodeURIComponent(fileId)}`);
   url.searchParams.set("alt", "media");
+  url.searchParams.set("supportsAllDrives", "true");
 
   const response = await fetchGoogleDrive(url, token, "application/pdf");
 
@@ -204,6 +210,7 @@ async function fetchGoogleDrive(
       Authorization: `Bearer ${token}`,
       Accept: accept,
     },
+    cache: "no-store",
   });
 
   if (response.status === 401 || response.status === 403) {

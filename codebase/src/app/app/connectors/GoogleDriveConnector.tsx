@@ -94,7 +94,9 @@ export function GoogleDriveConnector({
     }
     setConnection("checking");
     try {
-      const res = await fetch("/api/sources/google-drive/status");
+      const res = await fetch("/api/sources/google-drive/status", {
+        cache: "no-store",
+      });
       const json = await res.json();
       if (res.ok && json.connected) {
         setConnection("connected");
@@ -122,6 +124,7 @@ export function GoogleDriveConnector({
 
       const res = await fetch(
         `/api/sources/google-drive/files?${params.toString()}`,
+        { cache: "no-store" },
       );
       const json = await res.json();
 
@@ -324,7 +327,7 @@ export function GoogleDriveConnector({
         </div>
 
         <p className="mt-3 text-sm leading-6 text-[#5f666d]">
-          Import Google Docs and PDFs from your Drive into a space.
+          Import Google Docs (docx) from your Drive into a space.
         </p>
 
         <div className="mt-4">
@@ -365,11 +368,11 @@ export function GoogleDriveConnector({
 
       {confirmDisconnect ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
+          className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
           onClick={() => setConfirmDisconnect(false)}
         >
           <div
-            className="w-full max-w-md rounded-xl border border-[#e6e8ea] bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+            className="animate-pop-in w-full max-w-md rounded-xl border border-[#e6e8ea] bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
             onClick={(event) => event.stopPropagation()}
           >
             <h2 className="text-xl font-semibold text-[#191c1e]">
@@ -403,11 +406,11 @@ export function GoogleDriveConnector({
 
       {open ? (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
+          className="animate-fade-in fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
           onClick={closeDialog}
         >
           <div
-            className="flex max-h-[85vh] w-full max-w-lg flex-col rounded-xl border border-[#e6e8ea] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+            className="animate-pop-in flex max-h-[85vh] w-full max-w-lg flex-col rounded-xl border border-[#e6e8ea] bg-white shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
             onClick={(event) => event.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-[#e6e8ea] px-6 py-4">
@@ -502,8 +505,8 @@ export function GoogleDriveConnector({
           )}
         </div>
 
-        <div>
-          <div className="flex items-center gap-2 rounded-md border border-[#d4d8dc] px-3 py-2 focus-within:border-[#191c1e]">
+        <div className="flex items-center gap-2">
+          <div className="flex flex-1 items-center gap-2 rounded-md border border-[#d4d8dc] px-3 py-2 focus-within:border-[#191c1e]">
             <HugeiconsIcon
               icon={Search01Icon}
               size={16}
@@ -518,12 +521,23 @@ export function GoogleDriveConnector({
               className="w-full text-sm text-[#191c1e] outline-none"
             />
           </div>
+          <button
+            type="button"
+            onClick={() => loadFiles(true)}
+            disabled={loadingFiles}
+            title="Refresh"
+            aria-label="Refresh Drive files"
+            className="flex h-[38px] w-[38px] shrink-0 items-center justify-center rounded-md border border-[#d4d8dc] text-[#5f666d] transition hover:bg-[#f7f9fb] hover:text-[#191c1e] disabled:opacity-60"
+          >
+            <HugeiconsIcon icon={RefreshIcon} size={16} strokeWidth={1.8} />
+          </button>
         </div>
 
         <div className="rounded-md border border-[#e6e8ea]">
           {files.length === 0 && !loadingFiles ? (
-            <p className="px-3 py-6 text-center text-sm text-[#9aa0a6]">
-              No Google Docs or PDFs found.
+            <p className="px-3 py-6 text-center text-sm leading-6 text-[#9aa0a6]">
+              No Google Docs or PDFs found. A just-created doc can take a moment
+              to appear in Drive — try Refresh.
             </p>
           ) : (
             <ul className="divide-y divide-[#eef0f2]">
@@ -599,7 +613,7 @@ export function GoogleDriveConnector({
     const space = spaces.find((s) => s.id === result.space_id);
 
     return (
-      <div className="space-y-4">
+      <div className="animate-fade-in space-y-4">
         <p className="text-sm text-[#5f666d]">
           {result.documents_imported}{" "}
           {result.documents_imported === 1 ? "document" : "documents"} imported
