@@ -6,6 +6,9 @@ node_modules/
 
 # Next.js
 .next/
+.cursor
+.claude
+.vercel
 out/
 
 # Production builds
@@ -72,3 +75,5 @@ docs/
 # AGENT-related
 AGENTS.md
 CLAUDE.md
+
+codebase/supabase/*

@@ -1,10 +1,8 @@
 import { createBrowserClient } from "@supabase/ssr";
+import { getSupabasePublishableKey, hasSupabaseConfig } from "./env";
 
 export function hasSupabaseBrowserEnv() {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
-  );
+  return hasSupabaseConfig();
 }
 
 export function createSupabaseBrowserClient() {
@@ -12,8 +10,10 @@ export function createSupabaseBrowserClient() {
     return null;
   }
 
+  const publishableKey = getSupabasePublishableKey();
+
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    publishableKey!,
   );
 }
