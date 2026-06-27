@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { signOut } from "@/app/auth/actions";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
@@ -55,11 +56,17 @@ export default async function AppPage() {
           <p className="mt-2 break-words text-sm font-medium text-[#5f666d]">
             {user.email}
           </p>
-          <div className="mt-6 rounded-md bg-[#fff0e8] p-4 text-sm font-medium text-[#5a4136]">
-            Google Auth is connected. The next phase can add Drive import and
-            document scanning.
-          </div>
-        </aside>
+            <div className="mt-6 rounded-md bg-[#fff0e8] p-4 text-sm font-medium text-[#5a4136]">
+              Google Auth is connected. The next phase can add Drive import and
+              document scanning.
+            </div>
+            <Link
+              href="/app/smoke"
+              className="mt-4 inline-flex w-full items-center justify-center rounded-md bg-[#191c1e] px-4 py-2.5 text-sm font-bold text-white transition hover:bg-[#34393e]"
+            >
+              LLM smoke test
+            </Link>
+          </aside>
 
         <div className="space-y-6">
           <section className="rounded-lg border border-[#e6e8ea] bg-white p-6 shadow-sm">
