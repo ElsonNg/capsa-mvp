@@ -14,14 +14,15 @@ Required for Phase 1 auth:
 
 ```text
 NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
 ```
 
 Additional variables for later phases:
 
 ```text
-SUPABASE_SERVICE_ROLE_KEY=
+SUPABASE_SECRET_KEY=
+SUPABASE_JWKS_URL=
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4.1-mini
 EXA_API_KEY=
@@ -29,7 +30,7 @@ GOOGLE_CLIENT_ID=
 GOOGLE_CLIENT_SECRET=
 ```
 
-Never commit real `.env` files.
+Never commit real `.env` files. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is the browser-safe Supabase publishable key. `SUPABASE_SECRET_KEY` is server-only and must never be exposed in client code.
 
 2. Install and run:
 
