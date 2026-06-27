@@ -26,8 +26,6 @@ SUPABASE_JWKS_URL=
 OPENAI_API_KEY=
 OPENAI_MODEL=gpt-4.1-mini
 EXA_API_KEY=
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
 ```
 
 Never commit real `.env` files. `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is the browser-safe Supabase publishable key. `SUPABASE_SECRET_KEY` is server-only and must never be exposed in client code.
@@ -42,6 +40,8 @@ pnpm dev
 ## Supabase Auth
 
 Google Auth is configured in the Supabase dashboard.
+
+The Google OAuth client ID and client secret are pasted into Supabase, not into this Next.js app and not into Vercel. Supabase uses them server-side for the Google provider.
 
 Use this Google Cloud authorized redirect URI:
 
@@ -97,7 +97,27 @@ The build script uses webpack because the default Next 16 Turbopack build hung i
 
 ## Vercel
 
-Deploy from this directory:
+For Phase 1, set these Vercel environment variables:
+
+```text
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=
+NEXT_PUBLIC_SITE_URL=https://capsa-mvp.vercel.app
+```
+
+For later OpenAI, Exa, and server API work, also add:
+
+```text
+SUPABASE_SECRET_KEY=
+SUPABASE_JWKS_URL=
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
+EXA_API_KEY=
+```
+
+Do not add Google OAuth client credentials to Vercel unless future code explicitly needs direct Google API calls outside Supabase Auth.
+
+Deploy from the repository root when the Vercel project root directory is set to `codebase`:
 
 ```bash
 vercel --prod
