@@ -18,17 +18,22 @@ async function getSiteUrl() {
   return host ? `${protocol}://${host}` : "http://localhost:3000";
 }
 
-export async function signInWithGoogle() {
+async function startGoogleOAuth(nextPath?: string) {
   const supabase = await getSupabaseServerClient();
 
   if (!supabase) {
     redirect("/?error=missing-env");
   }
 
+  const callbackUrl = new URL(`${await getSiteUrl()}/auth/callback`);
+  if (nextPath) {
+    callbackUrl.searchParams.set("next", nextPath);
+  }
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${await getSiteUrl()}/auth/callback`,
+      redirectTo: callbackUrl.toString(),
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -43,6 +48,18 @@ export async function signInWithGoogle() {
   }
 
   redirect(data.url);
+}
+
+export async function signInWithGoogle() {
+  await startGoogleOAuth();
+}
+
+/**
+ * Re-runs Google consent (to grant/refresh Drive access) and returns the user
+ * to `nextPath` after the OAuth callback. Invoked from the Connectors UI.
+ */
+export async function connectGoogleDrive(nextPath: string) {
+  await startGoogleOAuth(nextPath || "/app/connectors");
 }
 
 export async function signOut() {
