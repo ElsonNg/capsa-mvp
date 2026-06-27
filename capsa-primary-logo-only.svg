@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">Capsa primary logo mark</title>
+  <desc id="desc">A minimal orange rounded rectangle with a diagonal capsule-shaped negative-space cutout.</desc>
+  <defs>
+    <mask id="capsule-cutout">
+      <rect width="512" height="512" fill="#fff"/>
+      <g transform="rotate(-18 256 256)">
+        <rect x="132" y="206" width="248" height="100" rx="50" fill="#000"/>
+      </g>
+    </mask>
+  </defs>
+  <rect x="64" y="96" width="384" height="320" rx="72" fill="#FF6A00" mask="url(#capsule-cutout)"/>
+</svg>
