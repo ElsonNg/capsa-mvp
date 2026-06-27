@@ -1,9 +1,11 @@
 import { Suspense } from "react";
 import { getSpacesForCurrentUser } from "@/lib/spaces/queries";
+import { isGoogleDriveDisconnected } from "@/lib/connectors/queries";
 import { GoogleDriveConnector } from "./GoogleDriveConnector";
 
 export default async function ConnectorsPage() {
   const spaces = await getSpacesForCurrentUser();
+  const disconnected = await isGoogleDriveDisconnected();
   const spaceOptions = spaces.map((space) => ({
     id: space.id,
     name: space.name,
@@ -21,7 +23,10 @@ export default async function ConnectorsPage() {
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <Suspense>
-          <GoogleDriveConnector spaces={spaceOptions} />
+          <GoogleDriveConnector
+            spaces={spaceOptions}
+            disconnected={disconnected}
+          />
         </Suspense>
       </div>
     </div>

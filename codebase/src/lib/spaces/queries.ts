@@ -166,6 +166,23 @@ export async function getSpaceById(
   return { ...space, stats: statsBySpace.get(space.id) ?? emptyStats() };
 }
 
+export type ConflictSeverity = "low" | "medium" | "high";
+export type ConflictStatus = "open" | "quarantined" | "resolved";
+
+export type SpaceConflict = {
+  id: string;
+  title: string;
+  severity: ConflictSeverity;
+  status: ConflictStatus;
+  explanation: string;
+  recommended_action: string;
+  primary_document_id: string | null;
+  conflicting_document_id: string | null;
+  primary_document_title: string | null;
+  conflicting_document_title: string | null;
+  created_at: string;
+};
+
 const DOCUMENT_COLUMNS =
   "id, title, mime_type, source_url, modified_at, health_status, authority_level, quarantine_reason, created_at";
 
@@ -192,3 +209,56 @@ export async function getDocumentsForSpace(
 
   return data as SpaceDocument[];
 }
+
+/**
+ * Lists the conflicts detected in a space, newest first, with the titles of the
+ * primary (authoritative) and conflicting documents resolved.
+ */
+export async function getConflictsForSpace(
+  spaceId: string,
+): Promise<SpaceConflict[]> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("conflicts")
+    .select(
+      "id, title, severity, status, explanation, recommended_action, primary_document_id, conflicting_document_id, created_at, primary:documents!primary_document_id(title), conflicting:documents!conflicting_document_id(title)",
+    )
+    .eq("space_id", spaceId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return (data as unknown as RawConflictRow[]).map((row) => ({
+    id: row.id,
+    title: row.title,
+    severity: row.severity,
+    status: row.status,
+    explanation: row.explanation,
+    recommended_action: row.recommended_action,
+    primary_document_id: row.primary_document_id,
+    conflicting_document_id: row.conflicting_document_id,
+    primary_document_title: row.primary?.title ?? null,
+    conflicting_document_title: row.conflicting?.title ?? null,
+    created_at: row.created_at,
+  }));
+}
+
+type RawConflictRow = {
+  id: string;
+  title: string;
+  severity: ConflictSeverity;
+  status: ConflictStatus;
+  explanation: string;
+  recommended_action: string;
+  primary_document_id: string | null;
+  conflicting_document_id: string | null;
+  created_at: string;
+  primary: { title: string } | null;
+  conflicting: { title: string } | null;
+};

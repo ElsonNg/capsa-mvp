@@ -13,8 +13,10 @@ import {
   AlertCircleIcon,
   Cancel01Icon,
   Search01Icon,
+  RefreshIcon,
 } from "@hugeicons/core-free-icons";
 import { connectGoogleDrive } from "@/app/auth/actions";
+import { disconnectGoogleDrive } from "./actions";
 
 const GOOGLE_DOC_MIME = "application/vnd.google-apps.document";
 
@@ -43,7 +45,13 @@ type ImportResponse = {
 
 type Connection = "checking" | "connected" | "needs_connection" | "error";
 
-export function GoogleDriveConnector({ spaces }: { spaces: SpaceOption[] }) {
+export function GoogleDriveConnector({
+  spaces,
+  disconnected,
+}: {
+  spaces: SpaceOption[];
+  disconnected: boolean;
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -55,7 +63,9 @@ export function GoogleDriveConnector({ spaces }: { spaces: SpaceOption[] }) {
   const shouldAutoOpen = searchParams.get("add") === "google-drive";
 
   const [open, setOpen] = useState(shouldAutoOpen);
-  const [connection, setConnection] = useState<Connection>("checking");
+  const [connection, setConnection] = useState<Connection>(
+    disconnected ? "needs_connection" : "checking",
+  );
   const [targetSpaceId, setTargetSpaceId] = useState(initialSpaceId);
 
   const [search, setSearch] = useState("");
@@ -70,9 +80,18 @@ export function GoogleDriveConnector({ spaces }: { spaces: SpaceOption[] }) {
   const [importing, startImport] = useTransition();
   const [connecting, startConnect] = useTransition();
 
+  const [resyncMessage, setResyncMessage] = useState<string | null>(null);
+  const [resyncing, startResync] = useTransition();
+  const [confirmDisconnect, setConfirmDisconnect] = useState(false);
+  const [disconnecting, startDisconnect] = useTransition();
+
   const didInit = useRef(false);
 
   async function checkStatus(): Promise<Connection> {
+    if (disconnected) {
+      setConnection("needs_connection");
+      return "needs_connection";
+    }
     setConnection("checking");
     try {
       const res = await fetch("/api/sources/google-drive/status");
@@ -183,6 +202,47 @@ export function GoogleDriveConnector({ spaces }: { spaces: SpaceOption[] }) {
     });
   }
 
+  function handleResync() {
+    setResyncMessage(null);
+    startResync(async () => {
+      try {
+        const res = await fetch("/api/sources/google-drive/resync", {
+          method: "POST",
+        });
+        const json = await res.json();
+
+        if (!res.ok) {
+          if (json.code === "reconnect_required") {
+            setConnection("needs_connection");
+            setResyncMessage("Reconnect Google Drive to resync.");
+          } else {
+            setResyncMessage(json.error ?? "Resync failed.");
+          }
+          return;
+        }
+
+        const parts = [`${json.updated} updated`];
+        if (json.removed > 0) parts.push(`${json.removed} removed`);
+        setResyncMessage(`Resync complete. ${parts.join(", ")}.`);
+        router.refresh();
+      } catch {
+        setResyncMessage("Resync failed.");
+      }
+    });
+  }
+
+  function handleDisconnect() {
+    startDisconnect(async () => {
+      await disconnectGoogleDrive();
+      setConnection("needs_connection");
+      setConfirmDisconnect(false);
+      setResyncMessage(null);
+      setFiles([]);
+      setSelected(new Set());
+      router.refresh();
+    });
+  }
+
   function toggleFile(id: string) {
     setSelected((prev) => {
       const next = new Set(prev);
@@ -275,8 +335,71 @@ export function GoogleDriveConnector({ spaces }: { spaces: SpaceOption[] }) {
           >
             {connection === "needs_connection" ? "Connect" : "Import documents"}
           </button>
+
+          {connection === "connected" ? (
+            <div className="mt-3 flex items-center gap-4 border-t border-[#eef0f2] pt-3">
+              <button
+                type="button"
+                onClick={handleResync}
+                disabled={resyncing}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#5f666d] transition hover:text-[#191c1e] disabled:text-[#9aa0a6]"
+              >
+                <HugeiconsIcon icon={RefreshIcon} size={15} strokeWidth={1.8} />
+                {resyncing ? "Resyncing…" : "Resync"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmDisconnect(true)}
+                className="text-sm font-semibold text-[#ba1a1a] transition hover:text-[#9a1414]"
+              >
+                Disconnect
+              </button>
+            </div>
+          ) : null}
+
+          {resyncMessage ? (
+            <p className="mt-2 text-sm text-[#5f666d]">{resyncMessage}</p>
+          ) : null}
         </div>
       </div>
+
+      {confirmDisconnect ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#191c1e]/30 px-4"
+          onClick={() => setConfirmDisconnect(false)}
+        >
+          <div
+            className="w-full max-w-md rounded-xl border border-[#e6e8ea] bg-white p-6 shadow-[0_24px_60px_rgba(15,23,42,0.18)]"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <h2 className="text-xl font-semibold text-[#191c1e]">
+              Disconnect Google Drive
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-[#5f666d]">
+              Capsa will stop accessing your Drive. Documents you&apos;ve already
+              imported stay in their spaces — disconnecting does not delete them.
+              You can reconnect anytime.
+            </p>
+            <div className="mt-5 flex items-center justify-end gap-3">
+              <button
+                type="button"
+                onClick={() => setConfirmDisconnect(false)}
+                className="rounded-md px-4 py-2 text-sm font-semibold text-[#5f666d] transition hover:text-[#191c1e]"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleDisconnect}
+                disabled={disconnecting}
+                className="rounded-md bg-[#ba1a1a] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#9a1414] disabled:cursor-not-allowed disabled:bg-[#e0a3a0]"
+              >
+                {disconnecting ? "Disconnecting…" : "Disconnect"}
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
 
       {open ? (
         <div

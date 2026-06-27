@@ -7,7 +7,7 @@ export const PDF_MIME_TYPE = "application/pdf";
 const DRIVE_FILE_FIELDS =
   "nextPageToken,files(id,name,mimeType,modifiedTime,webViewLink,iconLink,size)";
 const DRIVE_FILE_METADATA_FIELDS =
-  "id,name,mimeType,modifiedTime,webViewLink,iconLink,size";
+  "id,name,mimeType,modifiedTime,webViewLink,iconLink,size,trashed";
 
 export type GoogleDriveFile = {
   id: string;
@@ -17,6 +17,7 @@ export type GoogleDriveFile = {
   webViewLink?: string;
   iconLink?: string;
   size?: string;
+  trashed?: boolean;
 };
 
 export type GoogleDriveFileList = {

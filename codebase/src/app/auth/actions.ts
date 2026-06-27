@@ -59,6 +59,20 @@ export async function signInWithGoogle() {
  * to `nextPath` after the OAuth callback. Invoked from the Connectors UI.
  */
 export async function connectGoogleDrive(nextPath: string) {
+  // Clear any prior app-level disconnect before re-granting access.
+  const supabase = await getSupabaseServerClient();
+  if (supabase) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      await supabase
+        .from("profiles")
+        .update({ google_drive_disconnected: false })
+        .eq("id", user.id);
+    }
+  }
+
   await startGoogleOAuth(nextPath || "/app/connectors");
 }
 

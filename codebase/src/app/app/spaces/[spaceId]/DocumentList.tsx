@@ -106,6 +106,11 @@ export function DocumentList({ documents }: { documents: SpaceDocument[] }) {
                 {AUTHORITY_LABELS[doc.authority_level]}
                 {modified ? ` · Updated ${modified}` : null}
               </p>
+              {doc.health_status === "quarantined" && doc.quarantine_reason ? (
+                <p className="mt-1 text-xs leading-5 text-[#a04100]">
+                  {doc.quarantine_reason}
+                </p>
+              ) : null}
             </div>
           </li>
         );

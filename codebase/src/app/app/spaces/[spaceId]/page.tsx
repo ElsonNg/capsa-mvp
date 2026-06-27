@@ -2,11 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { GoogleDriveIcon } from "@hugeicons/core-free-icons";
-import { getSpaceById, getDocumentsForSpace } from "@/lib/spaces/queries";
+import {
+  getSpaceById,
+  getDocumentsForSpace,
+  getConflictsForSpace,
+} from "@/lib/spaces/queries";
 import { SpaceIcon } from "@/app/app/components/SpaceIcon";
 import { EditSpaceModal } from "@/app/app/components/EditSpaceModal";
 import { DeleteSpaceModal } from "@/app/app/components/DeleteSpaceModal";
 import { DocumentList } from "./DocumentList";
+import { ConflictList } from "./ConflictList";
+import { ScanButton } from "./ScanButton";
 
 export default async function SpaceDetailPage({
   params,
@@ -23,6 +29,7 @@ export default async function SpaceDetailPage({
   const { stats } = space;
   const needsAttention = space.health_status !== "healthy";
   const documents = await getDocumentsForSpace(space.id);
+  const conflicts = await getConflictsForSpace(space.id);
 
   return (
     <div className="mx-auto max-w-5xl px-8 py-10">
@@ -71,15 +78,22 @@ export default async function SpaceDetailPage({
       </p>
 
       <section className="mt-8 rounded-xl border border-[#e6e8ea] bg-white p-5">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <h2 className="text-base font-semibold text-[#191c1e]">Documents</h2>
-          <Link
-            href={`/app/connectors?add=google-drive&spaceId=${space.id}`}
-            className="inline-flex items-center gap-2 rounded-md bg-[#191c1e] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#34393e]"
-          >
-            <HugeiconsIcon icon={GoogleDriveIcon} size={16} strokeWidth={1.8} />
-            Import from Google Drive
-          </Link>
+          <div className="flex items-center gap-2">
+            <ScanButton spaceId={space.id} disabled={documents.length === 0} />
+            <Link
+              href={`/app/connectors?add=google-drive&spaceId=${space.id}`}
+              className="inline-flex items-center gap-2 rounded-md bg-[#191c1e] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#34393e]"
+            >
+              <HugeiconsIcon
+                icon={GoogleDriveIcon}
+                size={16}
+                strokeWidth={1.8}
+              />
+              Import from Google Drive
+            </Link>
+          </div>
         </div>
 
         {documents.length === 0 ? (
@@ -91,11 +105,21 @@ export default async function SpaceDetailPage({
         )}
       </section>
 
-      <div className="mt-4 grid gap-4 md:grid-cols-3">
-        <SectionCard
-          title="Conflicts"
-          body="No conflicts found. Capsa flags contradictions between documents here."
-        />
+      <section className="mt-4 rounded-xl border border-[#e6e8ea] bg-white p-5">
+        <h2 className="text-base font-semibold text-[#191c1e]">Conflicts</h2>
+        {conflicts.length === 0 ? (
+          <p className="mt-2 text-sm leading-6 text-[#5f666d]">
+            No conflicts found. Run a scan to check your documents for
+            contradictions.
+          </p>
+        ) : (
+          <div className="mt-4">
+            <ConflictList conflicts={conflicts} />
+          </div>
+        )}
+      </section>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
         <SectionCard
           title="Research"
           body="Bring in external policy and market context to compare against your documents."
