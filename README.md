@@ -4,6 +4,11 @@ Clean and processed data, for smarter agents.
 
 Capsa is a document health platform for company knowledge. It connects to a team's source documents, extracts operational claims with OpenAI, detects contradictions, quarantines risky drafts, and gives allowed agents access to healthy documents only.
 
+## Links
+
+- [Live demo](https://capsa-mvp.vercel.app/)
+- [Presentation](https://canva.link/pot0ey5yi6f5ioi)
+
 ## Why Capsa Exists
 
 Company knowledge gets stale long before anyone notices. Old policies stay in Drive, drafts look official, and AI agents can turn the wrong document into an automated customer answer.
