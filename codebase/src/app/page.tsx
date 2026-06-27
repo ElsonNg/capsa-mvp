@@ -322,26 +322,17 @@ function DemoClipPlaceholder() {
             <span className="h-2.5 w-2.5 rounded-full bg-[#087a53]" />
           </div>
           <span className="rounded-full border border-white/10 bg-white/8 px-3 py-1 text-xs font-bold text-white/72">
-            Demo clip placeholder
+            Product demo
           </span>
         </div>
-        <div className="relative grid aspect-video place-items-center overflow-hidden bg-[#0f172a]">
-          <div className="absolute inset-0 bg-[linear-gradient(115deg,rgba(255,106,0,0.32),transparent_34%),radial-gradient(circle_at_68%_28%,rgba(255,255,255,0.24),transparent_24%),linear-gradient(180deg,rgba(255,255,255,0.08),rgba(15,23,42,0.96))]" />
-          <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:42px_42px]" />
-          <div className="relative mx-auto max-w-xl px-6 text-center">
-            <div className="mx-auto grid h-16 w-16 place-items-center rounded-full border border-white/20 bg-white/12 text-white shadow-2xl backdrop-blur">
-              <span className="ml-1 h-0 w-0 border-y-[10px] border-l-[16px] border-y-transparent border-l-white" />
-            </div>
-            <h3 className="mt-6 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-              Insert product demo clip here
-            </h3>
-            <p className="mt-3 text-sm font-medium leading-6 text-white/68 sm:text-base">
-              Reserved for the final two-minute flow: Drive import, OpenAI
-              scan, quarantine, Exa research, and the healthy-documents-only
-              agent answer.
-            </p>
-          </div>
-        </div>
+        <video
+          className="aspect-video w-full bg-[#0f172a] object-cover"
+          src="/demo/capsa-demo.mp4"
+          controls
+          preload="metadata"
+          playsInline
+          aria-label="Capsa product demo"
+        />
       </div>
     </div>
   );
