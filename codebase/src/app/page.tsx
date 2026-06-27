@@ -57,9 +57,17 @@ const sponsorTech = [
 export default async function Home({
   searchParams,
 }: {
-  searchParams?: Promise<{ error?: string }>;
+  searchParams?: Promise<{ code?: string; error?: string; next?: string }>;
 }) {
   const params = await searchParams;
+
+  if (params?.code) {
+    const callbackParams = new URLSearchParams({ code: params.code });
+    if (params.next) {
+      callbackParams.set("next", params.next);
+    }
+    redirect(`/auth/callback?${callbackParams.toString()}`);
+  }
 
   if (params?.error) {
     redirect(`/sign-in?error=${encodeURIComponent(params.error)}`);
