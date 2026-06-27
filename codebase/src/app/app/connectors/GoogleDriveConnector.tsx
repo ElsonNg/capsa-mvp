@@ -327,7 +327,7 @@ export function GoogleDriveConnector({
         </div>
 
         <p className="mt-3 text-sm leading-6 text-[#5f666d]">
-          Import Google Docs (docx) from your Drive into a space.
+          Import Google Docs from your Drive into a space.
         </p>
 
         <div className="mt-4">

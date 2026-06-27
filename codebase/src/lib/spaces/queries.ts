@@ -180,6 +180,8 @@ export type SpaceConflict = {
   conflicting_document_id: string | null;
   primary_document_title: string | null;
   conflicting_document_title: string | null;
+  primary_document_url: string | null;
+  conflicting_document_url: string | null;
   created_at: string;
 };
 
@@ -225,7 +227,7 @@ export async function getConflictsForSpace(
   const { data, error } = await supabase
     .from("conflicts")
     .select(
-      "id, title, severity, status, explanation, recommended_action, primary_document_id, conflicting_document_id, created_at, primary:documents!primary_document_id(title), conflicting:documents!conflicting_document_id(title)",
+      "id, title, severity, status, explanation, recommended_action, primary_document_id, conflicting_document_id, created_at, primary:documents!primary_document_id(title, source_url), conflicting:documents!conflicting_document_id(title, source_url)",
     )
     .eq("space_id", spaceId)
     .order("created_at", { ascending: false });
@@ -245,6 +247,8 @@ export async function getConflictsForSpace(
     conflicting_document_id: row.conflicting_document_id,
     primary_document_title: row.primary?.title ?? null,
     conflicting_document_title: row.conflicting?.title ?? null,
+    primary_document_url: row.primary?.source_url ?? null,
+    conflicting_document_url: row.conflicting?.source_url ?? null,
     created_at: row.created_at,
   }));
 }
@@ -259,6 +263,6 @@ type RawConflictRow = {
   primary_document_id: string | null;
   conflicting_document_id: string | null;
   created_at: string;
-  primary: { title: string } | null;
-  conflicting: { title: string } | null;
+  primary: { title: string; source_url: string | null } | null;
+  conflicting: { title: string; source_url: string | null } | null;
 };
