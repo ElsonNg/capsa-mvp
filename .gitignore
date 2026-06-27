@@ -64,3 +64,6 @@ Thumbs.db
 *.zip
 *.tar
 *.tar.gz
+
+# Ignore local docs
+docs/
