@@ -8,6 +8,24 @@ export type DocumentHealthStatus =
   | "needs_review"
   | "quarantined";
 
+export type DocumentAuthorityLevel =
+  | "approved_policy"
+  | "current_document"
+  | "draft"
+  | "archived";
+
+export type SpaceDocument = {
+  id: string;
+  title: string;
+  mime_type: string;
+  source_url: string | null;
+  modified_at: string | null;
+  health_status: DocumentHealthStatus;
+  authority_level: DocumentAuthorityLevel;
+  quarantine_reason: string | null;
+  created_at: string;
+};
+
 export type Space = {
   id: string;
   name: string;
@@ -146,4 +164,31 @@ export async function getSpaceById(
   const statsBySpace = await getStatsBySpaceId(supabase, [space.id]);
 
   return { ...space, stats: statsBySpace.get(space.id) ?? emptyStats() };
+}
+
+const DOCUMENT_COLUMNS =
+  "id, title, mime_type, source_url, modified_at, health_status, authority_level, quarantine_reason, created_at";
+
+/**
+ * Lists the documents in a space, newest first (RLS scopes to the owner).
+ */
+export async function getDocumentsForSpace(
+  spaceId: string,
+): Promise<SpaceDocument[]> {
+  const supabase = await getSupabaseServerClient();
+  if (!supabase) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("documents")
+    .select(DOCUMENT_COLUMNS)
+    .eq("space_id", spaceId)
+    .order("created_at", { ascending: false });
+
+  if (error || !data) {
+    return [];
+  }
+
+  return data as SpaceDocument[];
 }

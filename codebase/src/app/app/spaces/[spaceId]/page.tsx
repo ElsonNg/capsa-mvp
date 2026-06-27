@@ -2,10 +2,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { GoogleDriveIcon } from "@hugeicons/core-free-icons";
-import { getSpaceById } from "@/lib/spaces/queries";
+import { getSpaceById, getDocumentsForSpace } from "@/lib/spaces/queries";
 import { SpaceIcon } from "@/app/app/components/SpaceIcon";
 import { EditSpaceModal } from "@/app/app/components/EditSpaceModal";
 import { DeleteSpaceModal } from "@/app/app/components/DeleteSpaceModal";
+import { DocumentList } from "./DocumentList";
 
 export default async function SpaceDetailPage({
   params,
@@ -21,6 +22,7 @@ export default async function SpaceDetailPage({
 
   const { stats } = space;
   const needsAttention = space.health_status !== "healthy";
+  const documents = await getDocumentsForSpace(space.id);
 
   return (
     <div className="mx-auto max-w-5xl px-8 py-10">
@@ -68,22 +70,28 @@ export default async function SpaceDetailPage({
         ) : null}
       </p>
 
-      <div className="mt-8 grid gap-4 md:grid-cols-2">
-        <section className="rounded-xl border border-[#e6e8ea] bg-white p-5">
+      <section className="mt-8 rounded-xl border border-[#e6e8ea] bg-white p-5">
+        <div className="flex items-center justify-between gap-4">
           <h2 className="text-base font-semibold text-[#191c1e]">Documents</h2>
-          <p className="mt-2 text-sm leading-6 text-[#5f666d]">
-            {stats.total === 0
-              ? "No documents yet. Import from Google Drive to get started."
-              : `${stats.total} ${stats.total === 1 ? "document" : "documents"} in this space.`}
-          </p>
           <Link
             href={`/app/connectors?add=google-drive&spaceId=${space.id}`}
-            className="mt-4 inline-flex items-center gap-2 rounded-md bg-[#191c1e] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#34393e]"
+            className="inline-flex items-center gap-2 rounded-md bg-[#191c1e] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#34393e]"
           >
             <HugeiconsIcon icon={GoogleDriveIcon} size={16} strokeWidth={1.8} />
             Import from Google Drive
           </Link>
-        </section>
+        </div>
+
+        {documents.length === 0 ? (
+          <p className="mt-3 text-sm leading-6 text-[#5f666d]">
+            No documents yet. Import from Google Drive to get started.
+          </p>
+        ) : (
+          <DocumentList documents={documents} />
+        )}
+      </section>
+
+      <div className="mt-4 grid gap-4 md:grid-cols-3">
         <SectionCard
           title="Conflicts"
           body="No conflicts found. Capsa flags contradictions between documents here."
