@@ -2,6 +2,7 @@
 node_modules/
 .pnp/
 .pnp.js
+.pnpm-store/
 
 # Next.js
 .next/
@@ -67,3 +68,7 @@ Thumbs.db
 
 # Ignore local docs
 docs/
+
+# AGENT-related
+AGENTS.md
+CLAUDE.md

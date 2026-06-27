@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import {
   BackToTopButton,
+  PrecisionVisualizer,
   TruthFieldBackground,
 } from "@/app/components/landing";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
@@ -30,10 +31,12 @@ const workflowSteps = [
   },
 ];
 
-const proofPoints = [
-  "Support leaders can stop agents from quoting stale policy drafts.",
-  "Operations teams get a health view before internal knowledge reaches automation.",
-  "AI platform teams can expose a safer retrieval layer without rebuilding every document workflow.",
+const integrationChips = [
+  "Google Drive",
+  "OpenAI",
+  "Exa",
+  "Supabase",
+  "Allowed agents",
 ];
 
 const sponsorTech = [
@@ -87,29 +90,23 @@ export default async function Home({
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm font-semibold text-[#565e74] md:flex">
-            <a className="transition hover:text-[#a04100]" href="#fit">
-              Problem
-            </a>
-            <a className="transition hover:text-[#a04100]" href="#workflow">
-              Workflow
+            <a className="transition hover:text-[#a04100]" href="#precision">
+              Precision
             </a>
             <a className="transition hover:text-[#a04100]" href="#proof">
               Demo
+            </a>
+            <a className="transition hover:text-[#a04100]" href="#workflow">
+              Workflow
             </a>
           </nav>
 
           <div className="flex items-center gap-3">
             <Link
               href="/sign-in"
-              className="hidden rounded-lg px-3 py-2 text-sm font-bold text-[#565e74] transition hover:bg-white hover:text-[#191c1e] sm:inline-flex"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/sign-in"
               className="rounded-lg bg-[#ff6a00] px-4 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-orange)] transition hover:-translate-y-0.5 hover:bg-[#dc5a00]"
             >
-              Launch app
+              Launch App
             </Link>
           </div>
         </div>
@@ -118,103 +115,65 @@ export default async function Home({
       <section className="relative min-h-[680px] overflow-hidden border-b border-[#e6e8ea]">
         <TruthFieldBackground intensity="standard" />
         <div className="stitch-grid absolute inset-0 opacity-45" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-16 sm:px-6 lg:grid-cols-[0.92fr_1.08fr] lg:px-10 lg:pb-20 lg:pt-20">
-          <div className="max-w-3xl">
-            <div className="reveal-up inline-flex items-center gap-2 rounded-full border border-[#e6e8ea] bg-white/86 px-3 py-1.5 text-xs font-bold text-[#565e74] shadow-sm">
-              <span className="h-2 w-2 rounded-full bg-[#ff6a00]" />
-              Document health monitoring for agentic teams
-            </div>
-            <h1 className="reveal-up reveal-delay-1 mt-7 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-tight text-[#191c1e] sm:text-6xl">
-              Keep bad documents from becoming bad decisions.
+        <div className="relative mx-auto flex min-h-[680px] max-w-7xl items-center justify-center px-4 py-20 sm:px-6 lg:px-10">
+          <div className="mx-auto max-w-5xl text-center">
+            <h1 className="reveal-up reveal-delay-1 mx-auto mt-7 max-w-5xl text-5xl font-semibold leading-[0.98] tracking-tight text-[#191c1e] sm:text-6xl lg:text-7xl">
+              <span className="block">Trusted documents.</span>
+              <span className="block text-[#ff6a00]">Smarter agents.</span>
             </h1>
-            <p className="reveal-up reveal-delay-2 mt-6 max-w-2xl text-lg leading-8 text-[#565e74] sm:text-xl">
-              Capsa monitors company knowledge before it becomes agent ground
-              truth. It finds stale policies, explains contradictions, and
-              keeps allowed agents on healthy documents only.
+            <p className="reveal-up reveal-delay-2 mx-auto mt-6 max-w-3xl text-lg leading-8 text-[#565e74] sm:text-xl">
+              Capsa turns company knowledge into a trusted control layer for AI
+              agents, detecting contradictions, quarantining stale drafts, and
+              keeping every response grounded in healthy source documents.
             </p>
-            <div className="reveal-up reveal-delay-3 mt-9 flex flex-col gap-3 sm:flex-row">
+            <div className="reveal-up reveal-delay-3 mt-9 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 href="/sign-in"
                 className="inline-flex items-center justify-center rounded-lg bg-[#ff6a00] px-6 py-3.5 text-base font-bold text-white shadow-[var(--shadow-orange)] transition hover:-translate-y-0.5 hover:bg-[#dc5a00]"
               >
-                Launch app
+                Launch App
               </Link>
               <a
                 href="#proof"
                 className="inline-flex items-center justify-center rounded-lg border border-[#e2bfb0] bg-white/88 px-6 py-3.5 text-base font-bold text-[#191c1e] shadow-sm transition hover:-translate-y-0.5 hover:border-[#ff6a00]"
               >
-                View demo flow
+                Watch Demo
               </a>
-            </div>
-          </div>
-
-          <div className="reveal-up reveal-delay-2 lg:pt-12">
-            <div className="soft-card rounded-2xl p-4 sm:p-5">
-              <div className="rounded-xl border border-[#e6e8ea] bg-[#f8fafc] p-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-xs font-bold uppercase tracking-[0.12em] text-[#a04100]">
-                      Live protection
-                    </p>
-                    <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                      The agent asks about a 21-day refund.
-                    </h2>
-                  </div>
-                  <span className="hidden rounded-full bg-[#dff6eb] px-3 py-1 text-sm font-bold text-[#087a53] sm:inline-flex">
-                    Healthy only
-                  </span>
-                </div>
-                <div className="mt-5 grid gap-3">
-                  <HeroClaim
-                    label="Approved policy"
-                    value="14 days"
-                    tone="green"
-                  />
-                  <HeroClaim label="Draft policy" value="30 days" tone="red" />
-                  <div className="rounded-lg border border-[#e2bfb0] bg-white p-4">
-                    <p className="text-sm font-bold text-[#191c1e]">
-                      Safe answer
-                    </p>
-                    <p className="mt-2 text-sm font-semibold leading-6 text-[#565e74]">
-                      No. The approved support policy limits enterprise refunds
-                      to 14 days. The 30-day draft was quarantined and was not
-                      used.
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="fit" className="border-b border-[#e6e8ea] bg-white py-20">
-        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.8fr_1fr] lg:px-10">
-          <div>
+      <section
+        id="precision"
+        className="border-b border-[#e6e8ea] bg-white py-20 sm:py-24"
+      >
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-10">
+          <div className="max-w-xl">
             <p className="text-sm font-bold uppercase tracking-[0.14em] text-[#a04100]">
-              Product-market fit
+              Precision
             </p>
             <h2 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl">
-              AI agents made document debt urgent.
+              Precision & Clarity in every response.
             </h2>
-          </div>
-          <div className="grid gap-4">
-            <p className="text-lg leading-8 text-[#565e74]">
-              Teams already have stale policies, duplicated guidance, and old
-              drafts sitting beside approved documents. Search retrieves what it
-              can find. Agents can turn that polluted corpus into automated
-              wrong answers.
+            <p className="mt-5 text-lg leading-8 text-[#565e74]">
+              Capsa checks the claims behind each answer, separates trusted
+              policies from risky drafts, and gives operators a clear view of
+              what agents are allowed to use.
             </p>
-            <div className="grid gap-3">
-              {proofPoints.map((point) => (
-                <div
-                  key={point}
-                  className="rounded-xl border border-[#e6e8ea] bg-[#f8fafc] p-4 text-base font-semibold text-[#191c1e]"
+            <div className="mt-8 flex flex-wrap gap-2">
+              {integrationChips.map((chip) => (
+                <span
+                  key={chip}
+                  className="rounded-full bg-[#f2f4f6] px-3 py-1.5 text-sm font-bold text-[#565e74]"
                 >
-                  {point}
-                </div>
+                  {chip}
+                </span>
               ))}
             </div>
+          </div>
+          <div className="min-h-[420px]">
+            <PrecisionVisualizer />
           </div>
         </div>
       </section>
@@ -320,7 +279,7 @@ export default async function Home({
               href="/sign-in"
               className="inline-flex items-center justify-center rounded-lg bg-[#ff6a00] px-6 py-3.5 text-base font-bold text-white shadow-[var(--shadow-orange)] transition hover:-translate-y-0.5 hover:bg-[#dc5a00]"
             >
-              Launch app
+              Launch App
             </Link>
             <a
               href="#workflow"
@@ -383,30 +342,6 @@ function DemoClipPlaceholder() {
             </p>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function HeroClaim({
-  label,
-  value,
-  tone,
-}: {
-  label: string;
-  value: string;
-  tone: "green" | "red";
-}) {
-  const styles =
-    tone === "green"
-      ? "border-[#d7eadf] bg-[#fbfffd] text-[#087a53]"
-      : "border-[#ffdad6] bg-[#fff8f7] text-[#ba1a1a]";
-
-  return (
-    <div className={`rounded-lg border p-4 ${styles}`}>
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-sm font-bold text-[#191c1e]">{label}</p>
-        <p className="text-2xl font-semibold tracking-tight">{value}</p>
       </div>
     </div>
   );

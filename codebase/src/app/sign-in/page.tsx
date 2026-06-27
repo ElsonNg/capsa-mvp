@@ -34,12 +34,9 @@ export default async function SignInPage({
           <span className="text-2xl font-bold text-[#191c1e]">Capsa</span>
         </Link>
 
-        <h1 className="mt-10 text-3xl font-semibold text-[#191c1e]">
-          Sign in to Capsa
+        <h1 className="mt-6 text-lg font-medium text-[#191c1e]">
+          Just a few more steps...
         </h1>
-        <p className="mt-3 text-sm font-medium leading-6 text-[#5f666d]">
-          Use Google through Supabase Auth to open the Support Space.
-        </p>
 
         {params?.error ? (
           <div className="mt-5 rounded-md bg-[#ffdad6] p-3 text-sm font-semibold text-[#8c1d18]">
@@ -47,26 +44,15 @@ export default async function SignInPage({
           </div>
         ) : null}
 
-        {!envReady ? (
-          <div className="mt-5 rounded-md border border-[#e2bfb0] bg-[#fff0e8] p-4 text-sm font-semibold text-[#5a4136]">
-            Add Supabase URL and publishable key to `codebase/.env` before
-            signing in.
-          </div>
-        ) : null}
-
         <form action={signInWithGoogle} className="mt-6">
           <button
             disabled={!envReady}
-            className="flex w-full items-center justify-center rounded-md bg-[#ff6a00] px-4 py-3 text-base font-bold text-white transition hover:bg-[#d95800] disabled:cursor-not-allowed disabled:bg-[#d4d8dc]"
+            className="flex w-full items-center justify-center gap-3 rounded-md bg-[#ff6a00] px-4 py-3 text-base font-bold text-white transition hover:bg-[#d95800] disabled:cursor-not-allowed disabled:bg-[#d4d8dc]"
           >
+            <Image src="/google.svg" alt="" width={20} height={20} />
             Sign in with Google
           </button>
         </form>
-
-        <p className="mt-5 text-xs font-medium leading-5 text-[#7a8087]">
-          Google provider setup is completed in the Supabase dashboard. Redirect
-          back to `/auth/callback` for local and Vercel URLs.
-        </p>
       </section>
     </main>
   );
