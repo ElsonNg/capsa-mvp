@@ -1,14 +1,15 @@
 {
-  "name": "capsa-next",
+  "name": "capsa-mvp",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource/nunito": "^5.2.7",
     "@supabase/ssr": "^0.12.0",
     "@supabase/supabase-js": "^2.108.2",
     "exa-js": "^2.15.0",

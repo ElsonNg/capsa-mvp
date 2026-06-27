@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Capsa App
 
-## Getting Started
+Next.js app for the Capsa MVP.
 
-First, run the development server:
+## Local Setup
+
+1. Copy the example env file and fill in local values:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.example .env
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Required for Phase 1 auth:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+NEXT_PUBLIC_SUPABASE_URL=
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Additional variables for later phases:
 
-## Learn More
+```text
+SUPABASE_SERVICE_ROLE_KEY=
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
+EXA_API_KEY=
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+```
 
-To learn more about Next.js, take a look at the following resources:
+Never commit real `.env` files.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2. Install and run:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm install
+pnpm dev
+```
 
-## Deploy on Vercel
+## Supabase Auth
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Google Auth is configured in the Supabase dashboard.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Use this Google Cloud authorized redirect URI:
+
+```text
+https://<project-ref>.supabase.co/auth/v1/callback
+```
+
+Use these Supabase redirect URLs:
+
+```text
+http://localhost:3000/auth/callback
+https://<vercel-domain>/auth/callback
+```
+
+Set the Supabase Site URL to:
+
+```text
+http://localhost:3000
+```
+
+Then update it to the Vercel production URL after deployment.
+
+## Supabase CLI
+
+The initial migration lives in `supabase/migrations`.
+
+If the Supabase CLI is blocked by telemetry writes in this environment, run it with a writable home:
+
+```bash
+HOME=/private/tmp/supabase-home supabase --version
+```
+
+After `NEXT_PUBLIC_SUPABASE_URL` is filled, derive the project ref from the URL and link:
+
+```bash
+supabase link --project-ref <project-ref>
+```
+
+Then apply migrations:
+
+```bash
+supabase db push
+```
+
+## Build
+
+```bash
+pnpm lint
+pnpm build
+```
+
+The build script uses webpack because the default Next 16 Turbopack build hung in this local environment.
+
+## Vercel
+
+Deploy from this directory:
+
+```bash
+vercel --prod
+```
+
+Configure all environment variables in Vercel without committing secrets. When connecting GitHub, set the Vercel project root directory to `codebase`.

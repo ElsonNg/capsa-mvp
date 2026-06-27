@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@fontsource/nunito':
+        specifier: ^5.2.7
+        version: 5.2.7
       '@supabase/ssr':
         specifier: ^0.12.0
         version: 0.12.0(@supabase/supabase-js@2.108.2)
@@ -22,7 +25,7 @@ importers:
         version: 16.2.9(@babel/core@7.29.7)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       openai:
         specifier: ^6.45.0
-        version: 6.45.0(zod@4.4.3)
+        version: 6.45.0(zod@3.25.76)
       react:
         specifier: 19.2.4
         version: 19.2.4
@@ -177,6 +180,9 @@ packages:
   '@eslint/plugin-kit@0.4.1':
     resolution: {integrity: sha512-43/qtrDUokr7LJqoF2c3+RInu/t4zfrpYdoSDfYyhg52rwLV6TnOvdG4fXm7IkSB3wErkcmJS9iEhjVtOSEjjA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@fontsource/nunito@5.2.7':
+    resolution: {integrity: sha512-pmtBq0H9ex9nk+RtJYEJOD9pag393iHETnl/PVKleF4i06cd0ttngK5ZCTgYb5eOqR3Xdlrjtev8m7bmgYprew==}
 
   '@humanfs/core@0.19.2':
     resolution: {integrity: sha512-UhXNm+CFMWcbChXywFwkmhqjs3PRCmcSa/hfBgLIb7oQ5HNb1wS0icWsGtSAUNgefHeI+eBrA8I1fxmbHsGdvA==}
@@ -2239,6 +2245,8 @@ snapshots:
       '@eslint/core': 0.17.0
       levn: 0.4.1
 
+  '@fontsource/nunito@5.2.7': {}
+
   '@humanfs/core@0.19.2':
     dependencies:
       '@humanfs/types': 0.15.0
@@ -3807,9 +3815,9 @@ snapshots:
     optionalDependencies:
       zod: 3.25.76
 
-  openai@6.45.0(zod@4.4.3):
+  openai@6.45.0(zod@3.25.76):
     optionalDependencies:
-      zod: 4.4.3
+      zod: 3.25.76
 
   optionator@0.9.4:
     dependencies:
